@@ -13,13 +13,23 @@ function MyApp() {
         setCharacters(result);
     });
   }, []);
-  
+
   async function fetchAll(){
     try {
       const response = await axios.get('http://localhost:5000/users')
-      return response.data.users_list;
+      return response.data.users_list
     }catch(error){
       //we're actually not catching errors... just logging to console
+      console.log(error)
+      return false
+    }
+  }
+
+  async function makePostCall(person){
+    try{
+      const response = await axios.post('http://localhost:5000/users', person)
+      return response
+    }catch(error){
       console.log(error)
       return false
     }
@@ -33,7 +43,10 @@ function MyApp() {
   }
 
   function updateList(person) {
-    setCharacters([...characters, person]);
+    makePostCall(person).then( result => {
+      if(result)
+      setCharacters([...characters, person])
+    })
   }
 
   return (
