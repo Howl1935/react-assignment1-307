@@ -81,9 +81,7 @@ def get_users():
       return users
    elif request.method == 'POST':
       userToAdd = request.get_json()
-      userToAdd['id']=randomId()
-      print(userToAdd)
-     
+      userToAdd['id']=randomId()     
       users['users_list'].append(userToAdd)
       resp = jsonify(userToAdd)
       resp.status_code = 201
@@ -101,8 +99,6 @@ def delete_user(id):
             users['users_list'].remove(user)
             resp.status_code = 204
             return resp
-      
-      
    resp.status_code = 404
    return resp
    

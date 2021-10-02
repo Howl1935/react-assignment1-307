@@ -15,30 +15,24 @@ function TableHeader() {
 
 function TableBody(props) {
     const rows = props.characterData.map((row, index) => {
-      //console.log(row.id)
       return (
-
-
-<tr key={index}>
-  <td>{row.id}</td>
-  <td>{row.name}</td>
-  <td>{row.job}</td>
-  <td>
-    <button onClick={() => props.removeCharacter(row.id)}>Delete</button>
-  </td>
-</tr>
+        <tr key={index}>
+          <td>{row.id}</td>
+          <td>{row.name}</td>
+          <td>{row.job}</td>
+          <td>
+            <button onClick={() => props.removeCharacter(row.id)}>Delete</button>
+          </td>
+        </tr>
       );
      }
-    );
-    
+    ); 
     return (
         <tbody>
           {rows}
          </tbody>
      );
   }
-
-
 
 function Table(props) {
     return (
@@ -48,6 +42,5 @@ function Table(props) {
       </table>
     );
 }
-
 export default Table;
 

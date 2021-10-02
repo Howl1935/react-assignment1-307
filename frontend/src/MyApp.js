@@ -37,14 +37,11 @@ function MyApp() {
   }
 
   async function removeOneCharacter(id) {
-
   try{
     const response = await axios.delete('http://localhost:5000/users/' + id)
     if(response.status === 204)
     {
-      console.log('success!')
       const updated = characters.filter((character) => {
-        //console.log(character.id)
         return character.id !== id
       });
       setCharacters(updated);
@@ -56,14 +53,16 @@ function MyApp() {
     console.log(error)
     return false;
   }
-
-  
   }
 
   function updateList(person) {
     makePostCall(person).then( result => {
-      if(result.status === 201)
-      setCharacters([...characters, result.data])
+      if(result){
+        if(result.status === 201)
+        setCharacters([...characters, result.data])
+      }else{
+        console.log('Object does not exist')
+      }
     })
   }
 
@@ -73,7 +72,6 @@ function MyApp() {
       <Form handleSubmit={ updateList } />
   </div>
 );  
-
 }
 
 export default MyApp;
