@@ -2,6 +2,8 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask_cors import CORS
+import string
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -36,6 +38,18 @@ users = {
       }
    ]
 }
+def randomId():
+  alphabet_string = string.ascii_lowercase
+  alphabet_list = list(alphabet_string)
+  prefix = ''
+  for x in range(3):
+      prefix += alphabet_list[random.randint(0,25)]
+  suffix = '' 
+  for x in range(3):
+   suffix += str(random.randint(0,9))
+   
+
+  return prefix + suffix
 
 
 
@@ -43,61 +57,57 @@ users = {
 def get_user_list():
    return users
 
-
-# @app.route('/users')
-# def get_users():
-#    search_username = request.args.get('name') #accessing the value of parameter 'name'
-#    if search_username :
-#       subdict = {'users_list' : []}
-#       for user in users['users_list']:
-#          if user['name'] == search_username:
-#             subdict['users_list'].append(user)
-#       return subdict
-#    return users
-
-
-
-
-# @app.route('/users/<id>')
-# def get_user(id):
-#    if id :
-#       for user in users['users_list']:
-#         if user['id'] == id:
-#            return user
-#       return ({})
-#    return users
-
-
-
-
 @app.route('/users', methods=['GET', 'POST'])
 def get_users():
    if request.method == 'GET':
       search_username = request.args.get('name')
-      if search_username :
+      search_jobname = request.args.get('job')  
+      if search_username and search_jobname:
          subdict = {'users_list' : []}
          for user in users['users_list']:
-            if user['name'] == search_username:
+            if user['name'] == search_username and user['job'] == search_jobname:
                subdict['users_list'].append(user)
+      elif search_username:
+         subdict = { 'users_list' : [] }
+         for user in users['users_list']:
+            if user['name'] == search_username:
+               subdict['users_list'].append(user)         
+      elif search_jobname:
+         subdict = { 'users_list' : [] }
+         for user in users['users_list']:
+            if user['job'] == search_jobname:
+               subdict['users_list'].append(user)             
          return subdict
       return users
    elif request.method == 'POST':
       userToAdd = request.get_json()
+      userToAdd['id']=randomId()
+      print(userToAdd)
+     
       users['users_list'].append(userToAdd)
-      resp = jsonify(success=True)
+      resp = jsonify(userToAdd)
+      resp.status_code = 201
       #resp.status_code = 200 #optionally, you can always set a response code. 
       # 200 is the default code for a normal response
       return resp
 
-
 @app.route('/users/<id>', methods=['DELETE'])
 def delete_user(id):
+   
    if request.method == 'DELETE':
+      resp = jsonify()
       for user in users['users_list']:
          if user['id'] == id:
             users['users_list'].remove(user)
-      resp = jsonify(success=True)
-   return resp      
+            resp.status_code = 204
+            return resp
+      
+      
+   resp.status_code = 404
+   return resp
+   
+
+   
       
          
   
